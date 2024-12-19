@@ -1,20 +1,19 @@
 import express from "express";
-import { Request, Response } from "express";
+import { Express, Request, Response } from "express";
 import swaggerUi from "swagger-ui-express";
 import * as swaggerFile from "../swagger_output.json";
-import routerTeste from "./routes/teste";
+import MainRouter from "./routes/MainRouter";
 
-const app = express();
+const app: Express = express();
+const mainRouter = new MainRouter();
 
 // setup for use json on requests
 app.use(express.json());
+
 // setup for swagger
 app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerFile));
 
-app.use(routerTeste);
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello world!");
-});
+// Routes
+app.use("/api", mainRouter.getRouter());
 
 export default app;
