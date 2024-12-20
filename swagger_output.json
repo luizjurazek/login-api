@@ -11,12 +11,35 @@
     "http"
   ],
   "paths": {
-    "/": {
-      "get": {
-        "description": "",
+    "/create-user": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "description": "Endpoint to create a user",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
-          "default": {
-            "description": ""
+          "201": {
+            "description": "Created"
           }
         }
       }
