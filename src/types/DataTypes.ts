@@ -5,4 +5,11 @@ interface responseType {
   data?: object;
 }
 
-export { responseType };
+interface controllerResponse {
+  error: boolean;
+  statusCode: number;
+  message: string;
+  data?: object;
+}
+
+export { responseType, controllerResponse };

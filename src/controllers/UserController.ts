@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import UserService from "../services/UserService";
-import { responseType } from "../types/DataTypes";
+import { controllerResponse } from "../types/DataTypes";
+import statusCode from "../helpers/statusCode";
 
 export default class UserController {
   private prisma: PrismaClient;
@@ -20,9 +21,9 @@ export default class UserController {
     const { name, email, password } = data;
 
     if (await this.isUserEmailInUse(email)) {
-      const response: responseType = {
-        statusCode: 400,
+      const response: controllerResponse = {
         error: true,
+        statusCode: statusCode.BAD_REQUEST,
         message: "Email already in use",
         data: {},
       };
@@ -30,9 +31,9 @@ export default class UserController {
     }
 
     const user = await this.userService.createUser({ name, email, password });
-    const response: responseType = {
-      statusCode: 201,
+    const response: controllerResponse = {
       error: false,
+      statusCode: statusCode.CREATED,
       message: "User created successfully",
       data: user,
     };

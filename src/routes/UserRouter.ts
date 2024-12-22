@@ -2,8 +2,9 @@ import { Router, Request, Response, NextFunction } from "express";
 import { PrismaClient } from "@prisma/client";
 import prisma from "../prisma";
 import UserController from "../controllers/UserController";
+import errorHandle from "../middleware/errorHandle";
 
-import { responseType } from "../types/DataTypes";
+import { responseType, controllerResponse } from "../types/DataTypes";
 export default class UserRouter {
   private router: Router;
   private prisma: PrismaClient;
@@ -11,6 +12,7 @@ export default class UserRouter {
 
   constructor() {
     this.router = Router();
+    this.router.use(errorHandle);
     this.prisma = prisma;
     this.userController = new UserController(this.prisma);
     this.Routes();
@@ -22,8 +24,8 @@ export default class UserRouter {
       // #swagger.description = 'Endpoint to create a user'
       try {
         const { name, email, password } = req.body;
-        const user: responseType = await this.userController.createUser({ name, email, password });
-        return res.status(user.statusCode).json(user);
+        const data: controllerResponse = await this.userController.createUser({ name, email, password });
+        return res.status(data.statusCode).json(data);
       } catch (error) {
         console.log(error);
         next(error);
