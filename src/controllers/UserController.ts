@@ -17,8 +17,8 @@ export default class UserController {
     return user !== null;
   }
 
-  public async createUser(data: { name: string; email: string; password: string }) {
-    const { name, email, password } = data;
+  public async createUser(data: { name: string; lastname: string; roleId: number; email: string; password: string }) {
+    const { name, lastname, roleId, email, password } = data;
 
     if (await this.isUserEmailInUse(email)) {
       const response: controllerResponse = {
@@ -30,13 +30,25 @@ export default class UserController {
       return response;
     }
 
-    const user = await this.userService.createUser({ name, email, password });
+    const user = await this.userService.createUser({ name, lastname, roleId, email, password });
     const response: controllerResponse = {
       error: false,
       statusCode: statusCode.CREATED,
       message: "User created successfully",
       data: user,
     };
+    return response;
+  }
+
+  public async getAllUsers() {
+    const users = await this.userService.getAllUsers();
+    const response: controllerResponse = {
+      error: false,
+      statusCode: statusCode.OK,
+      message: "Users found",
+      data: users,
+    };
+
     return response;
   }
 }

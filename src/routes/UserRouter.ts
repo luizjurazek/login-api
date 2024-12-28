@@ -23,8 +23,20 @@ export default class UserRouter {
       // #swagger.tags = ['User']
       // #swagger.description = 'Endpoint to create a user'
       try {
-        const { name, email, password } = req.body;
-        const data: controllerResponse = await this.userController.createUser({ name, email, password });
+        const { name, lastname, roleId, email, password } = req.body;
+        const data: controllerResponse = await this.userController.createUser({ name, lastname, roleId, email, password });
+        return res.status(data.statusCode).json(data);
+      } catch (error) {
+        console.log(error);
+        next(error);
+      }
+    });
+
+    this.router.get("/get-users", async (req: Request, res: Response, next: NextFunction) => {
+      // #swagger.tags = ['User']
+      // #swagger.description = 'Endpoint to get all users'
+      try {
+        const data: controllerResponse = await this.userController.getAllUsers();
         return res.status(data.statusCode).json(data);
       } catch (error) {
         console.log(error);

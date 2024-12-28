@@ -7,10 +7,10 @@ export default class UserService {
     this.prisma = prisma;
   }
 
-  public async createUser(data: { name: string; email: string; password: string }) {
-    const { name, email, password } = data;
+  public async createUser(data: { name: string; lastname: string; roleId: number; email: string; password: string }) {
+    const { name, lastname, roleId, email, password } = data;
     const user = await this.prisma.user.create({
-      data: { name, email, password },
+      data: { name, lastname, roleId, email, password },
     });
     return user;
   }
@@ -21,5 +21,10 @@ export default class UserService {
       where: { email },
     });
     return user;
+  }
+
+  public async getAllUsers() {
+    const users = await this.prisma.user.findMany();
+    return users;
   }
 }
