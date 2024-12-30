@@ -41,13 +41,44 @@ export default class UserController {
   }
 
   public async getAllUsers() {
+    let response: controllerResponse;
     const users = await this.userService.getAllUsers();
-    const response: controllerResponse = {
-      error: false,
-      statusCode: statusCode.OK,
-      message: "Users found",
-      data: users,
-    };
+    if (users.length === 0) {
+      response = {
+        error: false,
+        statusCode: statusCode.NOT_FOUND,
+        message: "No users found",
+      };
+      return response;
+    } else {
+      response = {
+        error: false,
+        statusCode: statusCode.OK,
+        message: "Users found",
+        data: users,
+      };
+    }
+
+    return response;
+  }
+
+  public async getUserBydId(userId: number) {
+    let response: controllerResponse;
+    const user = await this.userService.getUserById(userId);
+    if (user === null) {
+      response = {
+        error: false,
+        statusCode: statusCode.NOT_FOUND,
+        message: "User not found",
+      };
+    } else {
+      response = {
+        error: false,
+        statusCode: statusCode.OK,
+        message: "User found",
+        data: user,
+      };
+    }
 
     return response;
   }

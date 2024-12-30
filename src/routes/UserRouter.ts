@@ -4,7 +4,7 @@ import prisma from "../prisma";
 import UserController from "../controllers/UserController";
 import errorHandle from "../middleware/errorHandle";
 
-import { responseType, controllerResponse } from "../types/DataTypes";
+import { controllerResponse } from "../types/DataTypes";
 export default class UserRouter {
   private router: Router;
   private prisma: PrismaClient;
@@ -37,6 +37,19 @@ export default class UserRouter {
       // #swagger.description = 'Endpoint to get all users'
       try {
         const data: controllerResponse = await this.userController.getAllUsers();
+        return res.status(data.statusCode).json(data);
+      } catch (error) {
+        console.log(error);
+        next(error);
+      }
+    });
+
+    this.router.get("/get-user-by-id/:id", async (req: Request, res: Response, next: NextFunction) => {
+      // #swagger.tags = ['User']
+      // #swagger.description = 'Endpoint to get user by id'
+      const userId: number = parseInt(req.params.id);
+      try {
+        const data: controllerResponse = await this.userController.getUserBydId(userId);
         return res.status(data.statusCode).json(data);
       } catch (error) {
         console.log(error);

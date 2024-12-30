@@ -9,7 +9,7 @@ interface controllerResponse {
   error: boolean;
   statusCode: number;
   message: string;
-  data?: object;
+  data?: object | null;
 }
 
 export { responseType, controllerResponse };
