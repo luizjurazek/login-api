@@ -19,6 +19,17 @@ export default class UserRouter {
   }
 
   private Routes(): void {
+    this.router.post("/login", async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const { email, password }: { email: string; password: string } = req.body;
+        const data: controllerResponse = await this.userController.login({ email, password });
+        return res.status(data.statusCode).json(data);
+      } catch (error) {
+        console.log(error);
+        next(error);
+      }
+    });
+
     this.router.post("/create-user", async (req: Request, res: Response, next: NextFunction) => {
       // #swagger.tags = ['User']
       // #swagger.description = 'Endpoint to create a user'

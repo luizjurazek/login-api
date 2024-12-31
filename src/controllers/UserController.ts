@@ -17,6 +17,53 @@ export default class UserController {
     return user !== null;
   }
 
+  public async login(data: { email: string; password: string }) {
+    const { email, password }: { email: string; password: string } = data;
+    const user = await this.userService.getUserByEmail(email);
+    if (user === null) {
+      const response: controllerResponse = {
+        error: true,
+        statusCode: statusCode.NOT_FOUND,
+        message: "User not found",
+        data: {},
+      };
+      return response;
+    }
+
+    const isPasswordValid = await this.userService.isPasswordValid(email, password);
+
+    if (!isPasswordValid) {
+      const response: controllerResponse = {
+        error: true,
+        statusCode: statusCode.BAD_REQUEST,
+        message: "Invalid password",
+        data: {},
+      };
+      return response;
+    }
+
+    const token = await this.userService.generateTokenJWT(email);
+
+    if (!token) {
+      const response: controllerResponse = {
+        error: true,
+        statusCode: statusCode.INTERNAL_SERVER_ERROR,
+        message: "Error generating token",
+        data: {},
+      };
+
+      return response;
+    }
+
+    const response: controllerResponse = {
+      error: false,
+      statusCode: statusCode.OK,
+      message: "Login successful",
+      data: token,
+    };
+
+    return response;
+  }
   public async createUser(data: { name: string; lastname: string; roleId: number; email: string; password: string }) {
     const { name, lastname, roleId, email, password } = data;
 
