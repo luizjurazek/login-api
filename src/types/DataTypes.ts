@@ -12,4 +12,9 @@ interface controllerResponse {
   data?: object | null | boolean;
 }
 
-export { responseType, controllerResponse };
+interface userToken {
+  id: number;
+  email: string;
+  role: string;
+}
+export { responseType, controllerResponse, userToken };

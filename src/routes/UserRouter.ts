@@ -3,18 +3,20 @@ import { PrismaClient } from "@prisma/client";
 import prisma from "../prisma";
 import UserController from "../controllers/UserController";
 import errorHandle from "../middleware/errorHandle";
-
 import { controllerResponse } from "../types/DataTypes";
+import AuthMiddleware from "../middleware/auth";
 export default class UserRouter {
   private router: Router;
   private prisma: PrismaClient;
   private userController: UserController;
+  private authMiddleware: AuthMiddleware;
 
   constructor() {
     this.router = Router();
     this.router.use(errorHandle);
     this.prisma = prisma;
     this.userController = new UserController(this.prisma);
+    this.authMiddleware = new AuthMiddleware();
     this.Routes();
   }
 
@@ -30,7 +32,7 @@ export default class UserRouter {
       }
     });
 
-    this.router.post("/create-user", async (req: Request, res: Response, next: NextFunction) => {
+    this.router.post("/create-user", this.authMiddleware.authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
       // #swagger.tags = ['User']
       // #swagger.description = 'Endpoint to create a user'
       try {
@@ -66,6 +68,11 @@ export default class UserRouter {
         console.log(error);
         next(error);
       }
+    });
+
+    this.router.delete("/delete-user/:id", async (req: Request, res: Response, next: NextFunction) => {
+      // #swagger.tags = [ 'User']
+      // #swagger.description = 'Endpoint to delete user by id'
     });
   }
 
